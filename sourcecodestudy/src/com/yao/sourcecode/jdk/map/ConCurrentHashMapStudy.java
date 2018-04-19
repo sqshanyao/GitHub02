@@ -1,4 +1,4 @@
-package com.yao.sourcecode.map;
+package com.yao.sourcecode.jdk.map;
 
 import org.junit.Test;
 
