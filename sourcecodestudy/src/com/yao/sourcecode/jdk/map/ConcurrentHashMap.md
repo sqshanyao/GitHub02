@@ -1,5 +1,5 @@
 # ConcurrentHashMap
-
+这里大量使用了
 ## 主要参数
 正数的时候类似于HashMap中阀值<br>
 负数时有两种情况：<br>
@@ -51,6 +51,7 @@
                 tab = helpTransfer(tab, f);
             else {
                 V oldVal = null;
+				//对要添加的那个Node节点加锁
                 synchronized (f) {
                     if (tabAt(tab, i) == f) {
                         if (fh >= 0) {

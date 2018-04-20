@@ -13,6 +13,7 @@ public class ConCurrentHashMapStudy {
     public void testConcurrentHashMap() {
         ConcurrentHashMap map = new ConcurrentHashMap();
         map.put("","");
+        map.get("");
         HashMap hashMap = new HashMap();
     }
 }
