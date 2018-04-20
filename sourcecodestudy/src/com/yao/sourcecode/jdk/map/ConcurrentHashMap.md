@@ -15,6 +15,11 @@
 
 * table[]的初始值以及默认加载因子
 
+        static final int MOVED     = -1; // hash for forwarding nodes
+        static final int TREEBIN   = -2; // hash for roots of trees
+* 上面两个用于判断Node的如果Node的hash=-1表示该Node是一个forwardNode节点，该节点是一个扩容时的零时节点
+* 当hash=-2时表示该节点是一个树形节点
+
         static class Node<K,V> implements Map.Entry<K,V> {
         final int hash;
         final K key;
@@ -41,6 +46,7 @@
                              new Node<K,V>(hash, key, value, null)))
                     break;                   
             }
+            //hash值为-1链表正在进行扩容操作，加入其中帮助扩容
             else if ((fh = f.hash) == MOVED)
                 tab = helpTransfer(tab, f);
             else {
@@ -99,6 +105,7 @@
     private final Node<K,V>[] initTable() {
         Node<K,V>[] tab; int sc;
         while ((tab = table) == null || tab.length == 0) {
+			//有其他线程正在初始化，等一下
             if ((sc = sizeCtl) < 0)
                 Thread.yield(); // lost initialization race; just spin
             else if (U.compareAndSwapInt(this, SIZECTL, sc, -1)) {
