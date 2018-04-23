@@ -5,6 +5,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Vector;
 
 /**
  * Created by user on 2018/4/19.
@@ -29,6 +30,11 @@ public class LinkListStudy {
         list.add("");
         list.add(1,"");;
         list.spliterator();
+    }
+
+    @Test
+    public void testVector() {
+        Vector vector = new Vector();
     }
 
 
