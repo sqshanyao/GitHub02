@@ -1,5 +1,5 @@
 # ConcurrentHashMap
-这里大量使用了
+
 ## 主要参数
 正数的时候类似于HashMap中阀值<br>
 负数时有两种情况：<br>
@@ -29,6 +29,22 @@
 
 ## 主要方法
 
+* 构造方法
+
+        public ConcurrentHashMap(int initialCapacity,
+                             float loadFactor, int concurrencyLevel) {
+        if (!(loadFactor > 0.0f) || initialCapacity < 0 || concurrencyLevel <= 0)
+            throw new IllegalArgumentException();
+        if (initialCapacity < concurrencyLevel)   // Use at least as many bins
+            initialCapacity = concurrencyLevel;   // as estimated threads
+        long size = (long)(1.0 + (long)initialCapacity / loadFactor);
+        int cap = (size >= (long)MAXIMUM_CAPACITY) ?
+            MAXIMUM_CAPACITY : tableSizeFor((int)size);
+        this.sizeCtl = cap;
+    }
+
+
+
 * put方法	
 
 	
@@ -54,7 +70,9 @@
 				//对要添加的那个Node节点加锁
                 synchronized (f) {
                     if (tabAt(tab, i) == f) {
+						//如果节点的hash值<0，则节点上的数据可能是红黑树的形式
                         if (fh >= 0) {
+							
                             binCount = 1;
                             for (Node<K,V> e = f;; ++binCount) {
                                 K ek;
@@ -87,6 +105,7 @@
                     }
                 }
                 if (binCount != 0) {
+				    //当链表长度超过一定值改为红黑树存储
                     if (binCount >= TREEIFY_THRESHOLD)
                         treeifyBin(tab, i);
                     if (oldVal != null)
@@ -127,3 +146,22 @@
         return tab;
     }
     
+
+## ConcurrentHashMap与HashTable区别
+
+* 同步：从源码中可以看到两者的同步方式有很大的不同，ConcurrentHashMap同步机制是直接在方法上使用synchronized关键字加锁对象就是HashTable；二ConcurrentHashMap是在hash桶的某个节点Node上加锁，锁的粒度小了很多，而且ConcurrentHash大量使用了CASE算法。到这里两者的优缺点也就大概明白了。HashTable效率较低但是更安全更准确，ConcuurentHashMap效率更高但获取的数据可能并不是最新的数据。貌似回答了下面的问题？
+
+
+## 为什么不能用ConcurrentHashTable取代HashTable？
+*  这里涉及到一致性问题，ConcurrentHashTable是弱一致性二HashTable是强一致性，要研究内存模型了，我当前也是有点迷糊，记得在《多线程核心技术》中看到过，可能要重新去读一遍了。
+
+
+###我曾七次鄙视自己的灵魂
+* 第一次，当它本可进取时，却故作谦卑；
+第二次，当它在空虚时，用爱欲来填充；
+第三次，在困难和容易之间，它选择了容易；
+第四次，它犯了错，却借由别人也会犯错来宽慰自己；
+第五次，它自由软弱，却把它认为是生命的坚韧；
+第六次，当它鄙夷一张丑恶的嘴脸时，却不知那正是自己面具中的一副；
+第七次，它侧身于生活的污泥中，虽不甘心，却又畏首畏尾。
+
