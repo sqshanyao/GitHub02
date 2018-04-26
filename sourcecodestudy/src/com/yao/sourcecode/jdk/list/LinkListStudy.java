@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
+import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by user on 2018/4/19.
@@ -16,7 +17,6 @@ public class LinkListStudy {
         ArrayList list = new ArrayList<>();
         list.add("");
         list.set(1,"1");
-
 
     }
 
