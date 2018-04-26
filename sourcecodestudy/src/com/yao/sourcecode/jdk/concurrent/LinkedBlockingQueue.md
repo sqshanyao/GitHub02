@@ -109,7 +109,11 @@
         } finally {
             takeLock.unlock();
         }
-        if (c == capacity)
+        if (c == capacity)//如果队列满则唤醒一个想要获取元素的项城
             signalNotFull();
         return x;
     }
+
+
+
+* （之前队列为空）添加数据后调用signalNotEmpty()方法唤醒等待取数据的线程；（之前队列已满）取数据后调用signalNotFull()唤醒等待插入数据的线程。这种唤醒模式可节省线程等待时间。
