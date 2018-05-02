@@ -12,7 +12,7 @@ public class QueueTest {
     public void blockQueueTest() {
         LinkedBlockingQueue queue = new LinkedBlockingQueue(12);
         LinkedBlockingQueue queue1 = new LinkedBlockingQueue();
-        queue.l
-        queue.put("","");;
+//        queue.l
+//        queue.put("","");;
     }
 }
