@@ -2,6 +2,7 @@ package com.yao.sourcecode.jdk.concurrent;
 
 import org.junit.Test;
 
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -9,9 +10,11 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class QueueTest {
     @Test
-    public void blockQueueTest() {
+    public void blockQueueTest() throws InterruptedException {
         LinkedBlockingQueue queue = new LinkedBlockingQueue(12);
         LinkedBlockingQueue queue1 = new LinkedBlockingQueue();
+        ArrayBlockingQueue arrayBlockingQueue = new ArrayBlockingQueue(2);
+        arrayBlockingQueue.put("1");
 //        queue.l
 //        queue.put("","");;
     }

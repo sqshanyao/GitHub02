@@ -65,6 +65,7 @@
              * for all other uses of count in other wait guards.
              */
 			//如果队列已经满了，则需要等待，这里使用了cndition
+			//这里用while循环，如果被唤醒后发现队列任然是空则继续等待
             while (count.get() == capacity) {
                 notFull.await();
             }
@@ -72,7 +73,69 @@
             enqueue(node);
 			//元素数量加一
             c = count.getAndIncrement();
-			//判断队列是否已满，未满释放一个被阻塞的线程
+			//判断队列是否已满，未满唤醒一个被阻塞的线程
+            if (c + 1 < capacity)
+                notFull.signal();
+        } finally {
+            putLock.unlock();
+        }
+        if (c == 0)
+			//如果offer前队列为空，则唤醒notEmpty上的等待线程  			
+            signalNotEmpty();
+    }
+
+
+* take方法
+
+
+
+    public E take() throws InterruptedException {
+        E x;
+        int c = -1;
+        final AtomicInteger count = this.count;
+        final ReentrantLock takeLock = this.takeLock;
+        takeLock.lockInterruptibly();
+        try {
+			//如果队列为空，则等待
+            while (count.get() == 0) {
+                notEmpty.await();
+            }
+			//跳出循环说明队列有数据
+            x = dequeue();
+			//原子减一
+            c = count.getAndDecrement();
+            if (c > 1)//如果队列有元素唤醒等待的线程
+                notEmpty.signal();
+        } finally {
+            takeLock.unlock();
+        }
+        if (c == capacity)//如果队列满则唤醒一个想要获取元素的项城
+            signalNotFull();
+        return x;
+    }
+
+* offer
+添加一个元素如果添加失败放回false，这里也可以设置超时时间
+
+
+    public boolean offer(E e, long timeout, TimeUnit unit)
+        throws InterruptedException {
+
+        if (e == null) throw new NullPointerException();
+        long nanos = unit.toNanos(timeout);
+        int c = -1;
+        final ReentrantLock putLock = this.putLock;
+        final AtomicInteger count = this.count;
+        putLock.lockInterruptibly();
+        try {
+            while (count.get() == capacity) {
+                if (nanos <= 0)
+                    return false;
+				//设置超时等待时间，使用Condition的特新来控制等待时间
+                nanos = notFull.awaitNanos(nanos);
+            }
+            enqueue(new Node<E>(e));
+            c = count.getAndIncrement();
             if (c + 1 < capacity)
                 notFull.signal();
         } finally {
@@ -80,4 +143,39 @@
         }
         if (c == 0)
             signalNotEmpty();
+        return true;
     }
+
+
+* poll方法
+和offer一样，取数据如果没有返回null
+
+    public E poll(long timeout, TimeUnit unit) throws InterruptedException {
+        E x = null;
+        int c = -1;
+        long nanos = unit.toNanos(timeout);
+        final AtomicInteger count = this.count;
+        final ReentrantLock takeLock = this.takeLock;
+        takeLock.lockInterruptibly();
+        try {
+            while (count.get() == 0) {
+                if (nanos <= 0)
+                    return null;
+                nanos = notEmpty.awaitNanos(nanos);
+            }
+            x = dequeue();
+            c = count.getAndDecrement();
+            if (c > 1)
+                notEmpty.signal();
+        } finally {
+            takeLock.unlock();
+        }
+        if (c == capacity)
+            signalNotFull();
+        return x;
+    }
+
+* peek这个就不贴代码了
+取出数据并删除这个数据
+
+* （之前队列为空）添加数据后调用signalNotEmpty()方法唤醒等待取数据的线程；（之前队列已满）取数据后调用signalNotFull()唤醒等待插入数据的线程。这种唤醒模式可节省线程等待时间。？
