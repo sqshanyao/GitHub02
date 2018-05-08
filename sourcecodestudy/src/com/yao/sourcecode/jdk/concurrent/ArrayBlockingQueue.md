@@ -60,6 +60,7 @@
 
         public void put(E e) throws InterruptedException {
         checkNotNull(e);
+		//这里使用final是一个小技巧，能够怎加效率
         final ReentrantLock lock = this.lock;
         lock.lockInterruptibly();
         try {
@@ -83,4 +84,12 @@
 ArrayBlockingQueue因为是存放在数组当中我们知道数组初始化必须制定大小，而LinkedBlockingQueue可以不初始化大小其默认大小是最大整数，当然我们也可设置队列大小
 
 * 锁的使用
-从源码中可以看
+从源码中可以看LinkedBlockingQueue使用两个可重入锁
+
+	    private final ReentrantLock putLock = new ReentrantLock();
+		private final ReentrantLock putLock = new ReentrantLock();`
+
+而ArrayBlockingQueue只用了一个
+
+	private final ReentrantLocklock = new ReentrantLock(fair);
+主要原因是因为链表可以两端同时操作使用两个lock有助于增加效率，而数组无法同时操作
