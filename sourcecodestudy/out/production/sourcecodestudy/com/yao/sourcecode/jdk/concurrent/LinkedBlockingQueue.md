@@ -17,7 +17,7 @@
 
 
 
-* 可重入锁锁，从字面上就可以确定其作用了，这里的ReentrantLock以及Condition特新及使用，需要去了解一下，这里就不详细说了
+* 可重入锁锁，实现生产者-消费者的锁模型，从字面上就可以确定其作用了，这里的ReentrantLock以及Condition特新及使用，需要去了解一下，这里就不详细说了
 
     
     /** Lock held by take, poll, etc */
@@ -31,13 +31,13 @@
 
 
 
-* Condition对象：实现锁上多个对象等待且公平队列操作即遵循FIFO规则
+* Condition对象：实现锁上多个对象等待且公平队列操作即遵循FIFO规则，也是通过这个来实现阻塞以及超时功能
 
 
-    /** Wait queue for waiting puts */
+    /**  这个也是ReentrantLock 中的Condition的一个标识，标识队列中的元素不满 */
     private final Condition notFull = putLock.newCondition();
 
-    /** Wait queue for waiting takes */
+    /** 这个是有ReentrantLock 中的Condition一个标识队列中有元素非空标志，用于通知消费者队列中有数据了 */
     private final Condition notEmpty = takeLock.newCondition();
 
 ## 主要方法

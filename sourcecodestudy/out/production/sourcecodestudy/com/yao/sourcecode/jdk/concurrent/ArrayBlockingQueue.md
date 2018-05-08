@@ -56,31 +56,5 @@
 
 ## 主要方法
 
-* put
 
-        public void put(E e) throws InterruptedException {
-        checkNotNull(e);
-        final ReentrantLock lock = this.lock;
-        lock.lockInterruptibly();
-        try {
-            while (count == items.length)
-                notFull.await();
-            enqueue(e);
-        } finally {
-            lock.unlock();
-        }
-    
 
-**看了一下方法都比较简单，基本上都是对数组的基本操作，阻塞实现方式和LinkedBlockingQueue基本一致**
-可以参考[LinkedBlockingQueue]()
-## ArrayBlockingQueue与LinkedBlockingQueue的区别
-
-* 保存数据方式不同
-  
- ArrayBlockingQueue元素是放在一个数组当中，而LinkedBlockingQueue是以链表的形式存放元素
-
-* 初始化方式
-ArrayBlockingQueue因为是存放在数组当中我们知道数组初始化必须制定大小，而LinkedBlockingQueue可以不初始化大小其默认大小是最大整数，当然我们也可设置队列大小
-
-* 锁的使用
-从源码中可以看

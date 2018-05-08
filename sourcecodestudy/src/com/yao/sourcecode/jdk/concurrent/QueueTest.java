@@ -13,9 +13,15 @@ public class QueueTest {
     public void blockQueueTest() throws InterruptedException {
         LinkedBlockingQueue queue = new LinkedBlockingQueue(12);
         LinkedBlockingQueue queue1 = new LinkedBlockingQueue();
+//        queue.
+        queue.put("");
         ArrayBlockingQueue arrayBlockingQueue = new ArrayBlockingQueue(2);
         arrayBlockingQueue.put("1");
+//        arrayBlockingQueue.putIndex;
+//        arrayBlockingQueue.ite
 //        queue.l
 //        queue.put("","");;
     }
+
+    public void finalTest() {}
 }
