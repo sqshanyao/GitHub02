@@ -44,3 +44,7 @@
     newCapacity = hugeCapacity(minCapacity);
     elementData = Arrays.copyOf(elementData, newCapacity);
     }
+
+
+# Vector与ArratList区别
+
