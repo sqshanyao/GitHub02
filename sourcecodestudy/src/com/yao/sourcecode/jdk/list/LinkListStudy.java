@@ -16,7 +16,7 @@ public class LinkListStudy {
     public static void main(String[] args) {
         ArrayList list = new ArrayList<>();
         list.add("");
-        list.set(1,"1");
+        list.set(1,"1") ;
 
     }
 
