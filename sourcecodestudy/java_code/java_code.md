@@ -6,21 +6,21 @@
 
 ## List
 
-[ArrayList](https://github.com/shanyao19940801/SourceCodeStudy/sourcecodestudy/java_code/src/jdk/list/ArrayList.md)
+[ArrayList](https://github.com/shanyao19940801/SourceCodeStudy/sourcecodestudy/java_code/src/jdk/util/list/ArrayList.md)
 
-[LinkedList](https://github.com/shanyao19940801/SourceCodeStudy/sourcecodestudy/java_code/src/jdk/list/LinkedList.md)
+[LinkedList](https://github.com/shanyao19940801/SourceCodeStudy/sourcecodestudy/java_code/src/jdk/util/list/LinkedList.md)
 
-[Vector](https://github.com/shanyao19940801/SourceCodeStudy/sourcecodestudy/java_code/src/jdk/list/Vector.md)
+[Vector](https://github.com/shanyao19940801/SourceCodeStudy/sourcecodestudy/java_code/src/jdk/util/list/Vector.md)
 
 ## Map
 
 ## 并发包
 
-[ArrayBlockingQueue](https://github.com/shanyao19940801/SourceCodeStudy/sourcecodestudy/java_code/src/jdk/concurrent/ArrayBlockingQueue.md)
+[ArrayBlockingQueue](https://github.com/shanyao19940801/SourceCodeStudy/sourcecodestudy/java_code/src/jdk/util/concurrent/ArrayBlockingQueue.md)
 
-[ConcurrentHashMap](https://github.com/shanyao19940801/SourceCodeStudy/sourcecodestudy/java_code/src/jdk/concurrent/ConcurrentHashMap.md)
+[ConcurrentHashMap](https://github.com/shanyao19940801/SourceCodeStudy/sourcecodestudy/java_code/src/jdk/util/concurrent/ConcurrentHashMap.md)
 
-[LinkedBlockingQueue](https://github.com/shanyao19940801/SourceCodeStudy/sourcecodestudy/java_code/src/jdk/concurrent/LinkedBlockingQueue.md)
+[LinkedBlockingQueue](https://github.com/shanyao19940801/SourceCodeStudy/sourcecodestudy/java_code/src/jdk/util/concurrent/LinkedBlockingQueue.md)
 
 
 
