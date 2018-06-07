@@ -1,4 +1,4 @@
-package com.yao.sourcecode.jdk.set;
+package jdk.util.set;
 
 import org.junit.Test;
 
