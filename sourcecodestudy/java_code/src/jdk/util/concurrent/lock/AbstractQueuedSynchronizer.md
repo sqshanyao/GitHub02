@@ -1,6 +1,6 @@
 # 队列同步器
 
-是用来构建锁或者其他同步组件的基础框架，它使用了一个int成员变量表示同步状态，**通过内置的FIFO队列来完成资源获取线程的排队工作**，并发包的作者（Doug Lea）期望它能够成为实现大部分同步需求的基础
+是用来构建锁或者其他同步组件的基础框架，它使用了一个int成员变量表示同步状态，**通过内置的FIFO队列来完成资源获取线程的排队工作**
 
 同步器的主要使用方式是继承，**子类通过继承同步器并实现它的抽象方法来管理同步状
 态**，在抽象方法的实现过程中免不了要对同步状态进行更改，这时就需要使用同步器提供的3
@@ -95,15 +95,38 @@
 * Collection<Thread> getQueuedThreads()
 	获取等待在同步队列上的线程集合
 
+### 同步器中的节点
+
+用来保存获取同步状态失败的线程引用、等待状态以及前驱和后继节点
+主要节点的属性类型与名称以及描述
+
+* Node
+	* int waitStatus;
+	等待状态，包含以下状态
+	 * CANCELLED，值为1，表示当前的线程被取消
+	 * SIGNAL，值为-1，表示当前节点的后继节点包含的线程需要运行，当前节点的成如果释放或者取消通知后继节点
+	 * CONDITION，值为-2，表示当前节点在等待condition，也就是在condition队列中
+	 * PROPAGATE，值为-3，表示当前场景下后续的acquireShared能够得以执行
+	 * 值为0，初始状态，等待着获取锁
+	
+	* Node prev;
+	前驱节点
+	* Node next;
+	后继结点
+
+	* Node nextWaiter;
+	存储condition队列中的后继节点
+
+	* Thread thread;
+	入队列时的当前线程
 
 
+* 同步队列
 
+	没有获取到同步状态的节点会被加入到同步队列中
 
-
-
-
-
-
-
-
-
+	同步器提供了几个基于CASE的方法来设置同步队列的信息
+	* boolean compareAndSetHead(Node update)
+	* boolean compareAndSetTail(Node expect, Node update)
+	* boolean compareAndSetNext(Node node, Node expect, Node update)
+	* boolean compareAndSetWaitStatus(Node node, int expect, int update)
