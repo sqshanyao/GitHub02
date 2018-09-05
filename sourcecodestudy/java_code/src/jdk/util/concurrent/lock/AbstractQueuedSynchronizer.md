@@ -16,6 +16,13 @@
 
 同步器的设计是基于**模板方法模式**的，也就是说，使用者需要继承同步器并重写指定的方法，随后将同步器组合在自定义同步组件的实现中
 
+### 一些名词
+
+* 独占式
+	顾名思义同一时刻只能一个线程获取锁
+
+* 共享式
+	同一时刻可以多个线程获取锁，如在读写锁中读锁就是共享
 
 ### 同步器提供的可重写接口
 
@@ -69,6 +76,33 @@
 	当前同步器是否在独占模式下被线程占用，一般标示是否被当前线程所独占
 
 ### 同步器已经提供的模板方法
+
+* void acquire(int arg)
+	独占式获取同步状态，如果获取成功，则由该方法返回，否则将进入同步队列等待，该方法将会调用重写的tryAcquire(int arg)方法，**该方法不响应中断**
+
+* void acquireInterruptibly(int arg)
+	该方法与acquire(int arg)一样，**但是该方法会响应中断**，如果当前线程被中断则该方法会抛出InterruptedException
+	
+* acquireShared(int arg)
+	与acquire(int arg)一样但是该方法在**同一时刻可以有多个线程获取同步状态**
+* acquireSharedInterruptibly
+	与acquireInterruptibly(int arg)一样，但**该方法会响应中断**
+
+* boolean release(int arg)
+	独占式释放同步状态，释放后，将同步队列中的第一个节点包含的线程唤醒
+* boolean releaseShared(int arg)
+	共享式释放同步状态
+* Collection<Thread> getQueuedThreads()
+	获取等待在同步队列上的线程集合
+
+
+
+
+
+
+
+
+
 
 
 

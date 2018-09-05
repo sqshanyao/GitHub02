@@ -5,11 +5,11 @@
 ### util
 util包下的源码
 #### concurrent
-
+* 阻塞队列
 [ArrayBlockingQueue](https://github.com/sqshanyao/SourceCodeStudy/blob/master/sourcecodestudy/src/com/yao/sourcecode/jdk/concurrent/ArrayBlockingQueue.md)
-
-
 [LinkedBlockingQueue](https://github.com/sqshanyao/SourceCodeStudy/blob/master/sourcecodestudy/src/com/yao/sourcecode/jdk/concurrent/LinkedBlockingQueue.md)
+* 同步器AbstractQueuedSynchronizer
+
 
 ### map
 
