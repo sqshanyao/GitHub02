@@ -6,11 +6,13 @@
 util包下的源码
 #### concurrent
 * 阻塞队列
-[ArrayBlockingQueue](https://github.com/sqshanyao/SourceCodeStudy/blob/master/sourcecodestudy/src/com/yao/sourcecode/jdk/concurrent/ArrayBlockingQueue.md)
 
- [LinkedBlockingQueue](https://github.com/sqshanyao/SourceCodeStudy/blob/master/sourcecodestudy/src/com/yao/sourcecode/jdk/concurrent/LinkedBlockingQueue.md)
+[ArrayBlockingQueue](https://github.com/sqshanyao/SourceCodeStudy/blob/master/sourcecodestudy/java_code/src/jdk/util/concurrent/ArrayBlockingQueue.md)
+
+ [LinkedBlockingQueue](https://github.com/sqshanyao/SourceCodeStudy/blob/master/sourcecodestudy/java_code/src/jdk/util/concurrent/LinkedBlockingQueue.md)
 * 同步器AbstractQueuedSynchronizer
-	[AbstractQueuedSynchronizer](https://github.com/sqshanyao/SourceCodeStudy/blob/master/sourcecodestudy/java_code/src/jdk/util/concurrent/lock/AbstractQueuedSynchronizer.md)
+
+[AbstractQueuedSynchronizer](https://github.com/sqshanyao/SourceCodeStudy/blob/master/sourcecodestudy/java_code/src/jdk/util/concurrent/lock/AbstractQueuedSynchronizer.md)
 
 ### map
 
