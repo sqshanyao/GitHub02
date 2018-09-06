@@ -193,6 +193,8 @@ tryAcquire保证安全获取同步状态，这个**方法需要实现类自己�
 					//当前驱节点是头节点才能够尝试获取同步状态
 	                if (p == head && tryAcquire(arg)) {
 	                    setHead(node);
+					//这里help GC是垃圾回收的一个小细节，设置前驱节点的后继节点为null
+					//帮助垃圾回收器尽早将其回收
 	                    p.next = null; // help GC
 	                    failed = false;
 	                    return interrupted;
@@ -275,7 +277,7 @@ tryAcquireShared尝试获取同步状态，返回值大于等于0获取成功，
 	    }
 
 ### 独占式超时获取同步状态
-
+成功获取同步器与前面的基本一样，但是获取失败后的处理有所改动，失败后判断nanosTimeout小于0则表示获取失败
 
     private boolean doAcquireNanos(int arg, long nanosTimeout)
             throws InterruptedException {
@@ -289,6 +291,7 @@ tryAcquireShared尝试获取同步状态，返回值大于等于0获取成功，
                 final Node p = node.predecessor();
                 if (p == head && tryAcquire(arg)) {
                     setHead(node);
+
                     p.next = null; // help GC
                     failed = false;
                     return true;
