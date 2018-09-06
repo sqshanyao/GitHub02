@@ -182,3 +182,41 @@ tryAcquire保证安全获取同步状态，这个**方法需要实现类自己�
 
 * acquireQueued(Node node,int arg)
 
+当节点加入到同步队列中后，在这里通过“死循环”尝试获取同步状态
+
+	    final boolean acquireQueued(final Node node, int arg) {
+	        boolean failed = true;
+	        try {
+	            boolean interrupted = false;
+	            for (;;) {
+	                final Node p = node.predecessor();
+					//当前驱节点是头节点才能够尝试获取同步状态
+	                if (p == head && tryAcquire(arg)) {
+	                    setHead(node);
+	                    p.next = null; // help GC
+	                    failed = false;
+	                    return interrupted;
+	                }
+	                if (shouldParkAfterFailedAcquire(p, node) &&
+	                    parkAndCheckInterrupt())
+	                    interrupted = true;
+	            }
+	        } finally {
+	            if (failed)
+	                cancelAcquire(node);
+	        }
+	    }
+
+### 独占式同步状态释放
+释放同步状态，该方法在释放了同步状态之后，会唤醒其后继节点（进而使后继节点重新尝试获取同步状态）
+
+    public final boolean release(int arg) {
+        if (tryRelease(arg)) {
+            Node h = head;
+            if (h != null && h.waitStatus != 0)
+                unparkSuccessor(h);
+            return true;
+        }
+        return false;
+    }
+
