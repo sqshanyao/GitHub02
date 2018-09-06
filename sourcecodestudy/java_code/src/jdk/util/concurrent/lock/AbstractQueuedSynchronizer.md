@@ -78,22 +78,22 @@
 ### 同步器已经提供的模板方法
 
 * void acquire(int arg)
-	独占式获取同步状态，如果获取成功，则由该方法返回，否则将进入同步队列等待，该方法将会调用重写的tryAcquire(int arg)方法，**该方法不响应中断**
+	独占式获取同步状态，如果获取成功，则由该方法返回，否则将进入同步队列等待，该方法将会调用重写的tryAcquire(int arg)方法，**该方法不响应中断**，代码详情下面有
 
 * void acquireInterruptibly(int arg)
-	该方法与acquire(int arg)一样，**但是该方法会响应中断**，如果当前线程被中断则该方法会抛出InterruptedException
+	该方法与acquire(int arg)一样，**但是该方法会响应中断**，如果当前线程被中断则该方法会抛出InterruptedException，代码详情下面有
 	
 * acquireShared(int arg)
-	与acquire(int arg)一样但是该方法在**同一时刻可以有多个线程获取同步状态**
+	与acquire(int arg)一样但是该方法在**同一时刻可以有多个线程获取同步状态**，代码详情下面有
 * acquireSharedInterruptibly
-	与acquireInterruptibly(int arg)一样，但**该方法会响应中断**
+	与acquireInterruptibly(int arg)一样，但**该方法会响应中断**，代码详情下面有
 
 * boolean release(int arg)
-	独占式释放同步状态，释放后，将同步队列中的第一个节点包含的线程唤醒
+	独占式释放同步状态，释放后，将同步队列中的第一个节点包含的线程唤醒，代码详情下面有
 * boolean releaseShared(int arg)
-	共享式释放同步状态
+	共享式释放同步状态，代码详情下面有
 * Collection<Thread> getQueuedThreads()
-	获取等待在同步队列上的线程集合
+	获取等待在同步队列上的线程集合，代码详情下面有
 
 ### 同步器中的节点
 
@@ -133,4 +133,52 @@
 
 
 ### 独占式同步状态获取与释放
+
+* acquire
+
+
+    public final void acquire(int arg) {
+        if (!tryAcquire(arg) &&
+            acquireQueued(addWaiter(Node.EXCLUSIVE), arg))
+            selfInterrupt();
+    }
+
+tryAcquire保证安全获取同步状态，这个**方法需要实现类自己去实现，如果获取失败构造同步节点**，独占式**Node.EXCLUSIVE**，同一时刻只能有一个线程成功获取同步状态）并通过**addWaiter(Node node)**方法将该节点加入到同步队列的尾部，**最后**调用**acquireQueued(Node node,int arg)**方法，使得该节点以“死循环”的方式获取同步状态。如果获取不到则阻塞节点中的线程，而被阻塞线程的唤醒主要依靠前驱节点的出队或阻塞线程被中断来实现。
+
+* Node addWaiter(Node mode)
+	将节点加入同步队列尾部
+	    private Node addWaiter(Node mode) {
+	        Node node = new Node(Thread.currentThread(), mode);
+	        // Try the fast path of enq; backup to full enq on failure
+	        Node pred = tail;
+	        if (pred != null) {
+	            node.prev = pred;
+	            if (compareAndSetTail(pred, node)) {
+	                pred.next = node;
+	                return node;
+	            }
+	        }
+	        enq(node);
+	        return node;
+	    }
+
+* Node enq(final Node node)
+ 通过自旋（死循环）不停设置尾节点，因为同一时刻可能有多个线程插入
+	    private Node enq(final Node node) {
+	        for (;;) {
+	            Node t = tail;
+	            if (t == null) { // Must initialize
+	                if (compareAndSetHead(new Node()))
+	                    tail = head;
+	            } else {
+	                node.prev = t;
+	                if (compareAndSetTail(t, node)) {
+	                    t.next = node;
+	                    return t;
+	                }
+	            }
+	        }
+	    }
+
+* acquireQueued(Node node,int arg)
 
