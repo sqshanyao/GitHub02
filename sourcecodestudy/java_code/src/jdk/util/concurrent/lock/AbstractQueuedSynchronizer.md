@@ -273,3 +273,37 @@ tryAcquireShared尝试获取同步状态，返回值大于等于0获取成功，
 	        }
 	        return false;
 	    }
+
+### 独占式超时获取同步状态
+
+
+    private boolean doAcquireNanos(int arg, long nanosTimeout)
+            throws InterruptedException {
+        if (nanosTimeout <= 0L)
+            return false;
+        final long deadline = System.nanoTime() + nanosTimeout;
+        final Node node = addWaiter(Node.EXCLUSIVE);
+        boolean failed = true;
+        try {
+            for (;;) {
+                final Node p = node.predecessor();
+                if (p == head && tryAcquire(arg)) {
+                    setHead(node);
+                    p.next = null; // help GC
+                    failed = false;
+                    return true;
+                }
+                nanosTimeout = deadline - System.nanoTime();
+                if (nanosTimeout <= 0L)
+                    return false;
+                if (shouldParkAfterFailedAcquire(p, node) &&
+                    nanosTimeout > spinForTimeoutThreshold)
+                    LockSupport.parkNanos(this, nanosTimeout);
+                if (Thread.interrupted())
+                    throw new InterruptedException();
+            }
+        } finally {
+            if (failed)
+                cancelAcquire(node);
+        }
+    }
