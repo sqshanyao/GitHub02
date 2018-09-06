@@ -130,3 +130,7 @@
 	* boolean compareAndSetTail(Node expect, Node update)
 	* boolean compareAndSetNext(Node node, Node expect, Node update)
 	* boolean compareAndSetWaitStatus(Node node, int expect, int update)
+
+
+### 独占式同步状态获取与释放
+
