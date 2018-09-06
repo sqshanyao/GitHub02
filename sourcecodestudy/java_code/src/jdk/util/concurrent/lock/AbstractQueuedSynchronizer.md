@@ -277,7 +277,7 @@ tryAcquireShared尝试获取同步状态，返回值大于等于0获取成功，
 	    }
 
 ### 独占式超时获取同步状态
-成功获取同步器与前面的基本一样，但是获取失败后的处理有所改动，失败后判断nanosTimeout小于0则表示获取失败
+成功获取同步器与前面的基本一样，但是获取失败后的处理有所改动，失败后判断nanosTimeout小于0则表示获取超时
 
     private boolean doAcquireNanos(int arg, long nanosTimeout)
             throws InterruptedException {
