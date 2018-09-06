@@ -221,4 +221,55 @@ tryAcquire保证安全获取同步状态，这个**方法需要实现类自己�
     }
 
 ### 共享式式同步状态获取与释放
+* void acquireShared(int arg)
+tryAcquireShared尝试获取同步状态，返回值大于等于0获取成功，返回值小于0进入doAcquireShared开始自旋获取同步状态
 
+
+    public final void acquireShared(int arg) {
+        if (tryAcquireShared(arg) < 0)
+            doAcquireShared(arg);
+    }
+
+* void doAcquireShared(int arg)
+自旋共享式获取同步状态
+
+	   private void doAcquireShared(int arg) {
+			//将节点加入共享式同步队列中
+	        final Node node = addWaiter(Node.SHARED);
+	        boolean failed = true;
+	        try {
+	            boolean interrupted = false;
+				//自旋获取同步状态
+	            for (;;) {
+	                final Node p = node.predecessor();
+	                if (p == head) {
+	                    int r = tryAcquireShared(arg);
+	                    if (r >= 0) {
+	                        setHeadAndPropagate(node, r);
+	                        p.next = null; // help GC
+	                        if (interrupted)
+	                            selfInterrupt();
+	                        failed = false;
+	                        return;
+	                    }
+	                }
+	                if (shouldParkAfterFailedAcquire(p, node) &&
+	                    parkAndCheckInterrupt())
+	                    interrupted = true;
+	            }
+	        } finally {
+	            if (failed)
+	                cancelAcquire(node);
+	        }
+	    }
+
+
+* boolean releaseShared(int arg) 共享式释放同步状态
+
+	    public final boolean releaseShared(int arg) {
+	        if (tryReleaseShared(arg)) {
+	            doReleaseShared();
+	            return true;
+	        }
+	        return false;
+	    }
