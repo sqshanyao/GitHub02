@@ -28,3 +28,50 @@
             }
             return false;
         }
+
+### 释放锁
+上面说了获取锁会增加同步状态值，而释放锁时就需要减少同步状态值，当状态值为0时释放
+
+        protected final boolean tryRelease(int releases) {
+            int c = getState() - releases;
+            if (Thread.currentThread() != getExclusiveOwnerThread())
+                throw new IllegalMonitorStateException();
+            boolean free = false;
+            if (c == 0) {
+                free = true;
+                setExclusiveOwnerThread(null);
+            }
+            setState(c);
+            return free;
+        }
+
+
+### 公平获取同步状态
+
+        protected final boolean tryAcquire(int acquires) {
+            final Thread current = Thread.currentThread();
+            int c = getState();
+            if (c == 0) {
+				//公平获取锁在这里需要先利用同步器判断是否有前驱节点，没有之后才会尝试获取同步状态
+                if (!hasQueuedPredecessors() &&
+                    compareAndSetState(0, acquires)) {
+                    setExclusiveOwnerThread(current);
+                    return true;
+                }
+            }
+            else if (current == getExclusiveOwnerThread()) {
+                int nextc = c + acquires;
+                if (nextc < 0)
+                    throw new Error("Maximum lock count exceeded");
+                setState(nextc);
+                return true;
+            }
+            return false;
+        }
+    }
+
+
+### 公平性和非公平性的优缺点
+
+**公平性锁保证了锁的获取按照FIFO原则，而代价是进行大量的线程切换。非公平性锁虽
+然可能造成线程“饥饿”，但极少的线程切换，保证了其更大的吞吐量**
